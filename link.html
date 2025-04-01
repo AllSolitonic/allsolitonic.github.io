@@ -1,0 +1,7 @@
+<?php
+$urls = ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'https://www.youtube.com/watch?v=Jg4wlkX3cyg', 'https://youtu.be/ytp0-VploFA?si=oIid10-7DrVarqJ8'];
+$size = count($urls);
+$randomIndex = rand(0, $size - 1);
+$random = $urls[$randomIndex];
+header('Location: ' . $random, true, 303);
+?>
