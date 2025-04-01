@@ -1,7 +1,14 @@
-<?php
-$urls = ['https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'https://www.youtube.com/watch?v=Jg4wlkX3cyg', 'https://youtu.be/ytp0-VploFA?si=oIid10-7DrVarqJ8'];
-$size = count($urls);
-$randomIndex = rand(0, $size - 1);
-$random = $urls[$randomIndex];
-header('Location: ' . $random, true, 303);
-?>
+<script>
+const urls = [
+  "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  "https://www.youtube.com/watch?v=Jg4wlkX3cyg",
+  "https://youtu.be/ytp0-VploFA?si=oIid10-7DrVarqJ8",
+  "https://www.youtube.com/watch?v=pPPLGKT2rOE",
+  "https://www.youtube.com/watch?v=FtutLA63Cp8",
+  "https://www.youtube.com/watch?v=-lp2QjMt3-M"
+];
+
+const randomUrl = urls[Math.floor(Math.random() * urls.length)];
+
+window.location.href = randomUrl;
+</script>
