@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Система подсказок</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto; }
+        #container { position: relative; }
+        #input { width: 100%; padding: 12px; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        #suggestions { 
+            position: absolute; top: 100%; left: 0; right: 0; 
+            background: white; border: 2px solid #ddd; border-radius: 8px; max-height: 200px; overflow-y: auto; 
+            display: none; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .suggestion { padding: 12px; cursor: pointer; display: flex; align-items: center; border-bottom: 1px solid #eee; }
+        .suggestion:last-child { border-bottom: none; }
+        .suggestion:hover { background: #f8f9fa; }
+        .suggestion img { width: 40px; height: 40px; margin-right: 12px; border-radius: 4px; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <h2>Введите текст для подсказок</h2>
+    <p>Тест: введите "ко" или "кот" — увидите подсказку.</p>
+    <div id="container">
+        <input type="text" id="input" placeholder="Например: кот, соб...">
+        <div id="suggestions"></div>
+    </div>
+
+    <script>
+        // ТЕСТОВАЯ ЗАШИФРОВАННАЯ ПОДСКАЗКА (добавьте свои из Python)
+        const encryptedHints = [
+            {
+                "root": "+pD6lPuo",
+                "text": "+rD6lPuoCvqW+6n7qvqR+6H7rfqf+6gE",
+                "image": "Ql5eWlkQBQVPUktHWkZPBElFRwVJS14EQFpN"
+            }
+            // Добавьте больше из encrypt.py
+        ];
+
+        const input = document.getElementById('input');
+        const suggestionsDiv = document.getElementById('suggestions');
+        const container = document.getElementById('container');
+        const KEY = 42;
+
+        function decrypt(str) {
+            if (!str) return null;
+            const xorBytes = atob(str).split('').map(c => c.charCodeAt(0) ^ KEY);
+            return new TextDecoder().decode(new Uint8Array(xorBytes));
+        }
+
+        function closeSuggestions() {
+            suggestionsDiv.innerHTML = '';
+            suggestionsDiv.style.display = 'none';
+        }
+
+        function showSuggestions(value) {
+            closeSuggestions();
+            if (!value.trim()) return;
+
+            const matches = encryptedHints.filter(hint => {
+                const root = decrypt(hint.root);
+                return root && value.toLowerCase().includes(root.toLowerCase());
+            });
+
+            if (matches.length === 0) return;
+
+            matches.forEach(match => {
+                const root = decrypt(match.root);
+                const text = decrypt(match.text);
+                const image = decrypt(match.image);
+
+                const div = document.createElement('div');
+                div.className = 'suggestion';
+                div.innerHTML = (image ? `<img src="${image}" alt="${root}" onerror="this.style.display='none'">` : '') + text;
+                div.onclick = () => {
+                    input.value = text;
+                    closeSuggestions();
+                };
+                suggestionsDiv.appendChild(div);
+            });
+            suggestionsDiv.style.display = 'block';
+        }
+
+        input.addEventListener('input', (e) => showSuggestions(e.target.value));
+        input.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSuggestions(); });
+        document.addEventListener('click', (e) => {
+            if (!container.contains(e.target)) closeSuggestions();
+        });
+    </script>
+</body>
+</html>
