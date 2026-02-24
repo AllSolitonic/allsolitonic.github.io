@@ -1,68 +1,286 @@
-<body>2@ 
-ЖКТ/1/8/* 
-CCC/20/45/*
-@
-& Сибутрамин1 
-* 
-*tabl 
-*0.01 
-*g 
-*10 *
-* 
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Квест: Система подсказок</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Orbitron', monospace; 
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%); 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #e0e0e0;
+        }
 
-& Сибутрамин 2
-* 
-*tabl 
-*0.01 
-*g 
-*10 *
-* 
+        .quest-container {
+            background: rgba(255,255,255,0.05); 
+            backdrop-filter: blur(10px); 
+            border-radius: 20px; 
+            padding: 40px; 
+            width: 90%; max-width: 500px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
 
-& Сибутрамин 3
-* 
-*tabl 
-*0.01 
-*g 
-*10 *
-* 
+        h1 { 
+            text-align: center; 
+            font-size: 2.2em; 
+            font-weight: 900; 
+            background: linear-gradient(45deg, #00ff88, #00ccff); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            margin-bottom: 30px; 
+            text-shadow: 0 0 30px rgba(0,255,136,0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
 
-& Сибутрамин 4
-* 
-*tabl 
-*0.01 
-*g 
-*10 *
-* 
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(0,255,136,0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(0,255,136,0.8)); }
+        }
 
-& Сибутрамин 5
-* 
-*tabl 
-*0.01 
-*g 
-*10 *
-* 
+        .input-group {
+            position: relative; 
+            margin-bottom: 30px;
+        }
 
-& Сибутрамин 6
-* 
-*tabl 
-*0.01 
-*g 
-*10 *
-* 
+        #inputField {
+            width: 100%; 
+            padding: 18px 20px; 
+            font-size: 1.1em; 
+            background: rgba(255,255,255,0.08); 
+            border: 2px solid rgba(255,255,255,0.2); 
+            border-radius: 12px; 
+            color: #fff; 
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
 
-& Сибутрамин 7
-* 
-*tabl 
-*0.01 
-*g 
-*10 *
-* 
+        #inputField:focus {
+            outline: none; 
+            border-color: #00ff88; 
+            box-shadow: 0 0 20px rgba(0,255,136,0.3);
+            transform: translateY(-2px);
+        }
 
-& Сибутрамин 8
-* 
-*tabl 
-*0.01 
-*g 
-*10 *
-* 
+        #submitBtn {
+            width: 100%; 
+            padding: 18px; 
+            font-size: 1.2em; 
+            font-weight: 700; 
+            background: linear-gradient(45deg, #00ff88, #00ccff); 
+            border: none; 
+            border-radius: 12px; 
+            color: #000; 
+            cursor: pointer; 
+            font-family: inherit;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #submitBtn:hover { 
+            transform: translateY(-3px) scale(1.02); 
+            box-shadow: 0 10px 25px rgba(0,255,136,0.4);
+        }
+
+        #submitBtn:active { transform: translateY(-1px) scale(1); }
+
+        #resultArea {
+            min-height: 120px; 
+            margin-top: 25px; 
+            padding: 25px; 
+            border-radius: 12px; 
+            text-align: center; 
+            font-size: 1.1em;
+            opacity: 0; 
+            transform: translateY(20px); 
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .hint-found {
+            background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(0,204,255,0.2)); 
+            border: 2px solid #00ff88; 
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .hint-not-found {
+            background: rgba(255,100,100,0.15); 
+            border: 2px solid #ff6666; 
+            color: #ffcccc; 
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .hint-content {
+            display: flex; 
+            align-items: flex-start; 
+            gap: 15px;
+        }
+
+        .hint-image {
+            width: 80px; 
+            height: 80px; 
+            border-radius: 12px; 
+            object-fit: cover; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hint-text {
+            flex: 1; 
+            line-height: 1.5;
+        }
+
+        .scan-animation {
+            position: absolute; 
+            top: -100%; 
+            left: 0; 
+            right: 0; 
+            height: 4px; 
+            background: linear-gradient(90deg, transparent, #00ff88, #00ccff, transparent); 
+            animation: scan 1.5s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+
+        .test-hint {
+            font-size: 0.9em; 
+            color: #88ff88; 
+            margin-top: 15px; 
+            padding: 12px; 
+            background: rgba(0,255,136,0.1); 
+            border-radius: 8px; 
+            border-left: 4px solid #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <div class="quest-container">
+        <h1>🔍 СИСТЕМА ПОДСКАЗОК</h1>
+        
+        <div class="input-group">
+            <input type="text" id="inputField" placeholder="Введите фразу для анализа...">
+            <div class="scan-animation" id="scanEffect"></div>
+        </div>
+        
+        <button id="submitBtn">🔎 АНАЛИЗИРОВАТЬ</button>
+        
+        <div id="resultArea"></div>
+        
+        <div class="test-hint">
+            💡 Тест: введите "кот", "кошка" или "мурлычет"
+        </div>
+    </div>
+
+    <script>
+        // ТЕСТОВАЯ ЗАШИФРОВАННАЯ ПОДСКАЗКА
+        const encryptedHints = [
+            {
+                "root": "+pD6lPuo",
+                "text": "+rD6lPuoCvqW+6n7qvqR+6H7rfqf+6gE",
+                "image": "Ql5eWlkQBQVPUktHWkZPBElFRwVJS14EQFpN"
+            }
+        ];
+
+        const KEY = 42;
+        const inputField = document.getElementById('inputField');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultArea = document.getElementById('resultArea');
+        const scanEffect = document.getElementById('scanEffect');
+
+        function decrypt(str) {
+            if (!str) return null;
+            const xorBytes = atob(str).split('').map(c => c.charCodeAt(0) ^ KEY);
+            return new TextDecoder().decode(new Uint8Array(xorBytes));
+        }
+
+        function showHint() {
+            resultArea.innerHTML = '';
+            resultArea.className = 'hint-not-found';
+            resultArea.textContent = '❌ Подсказка не найдена';
+
+            const inputValue = inputField.value.toLowerCase().trim();
+            if (!inputValue) return;
+
+            // Показываем анимацию сканирования
+            scanEffect.style.display = 'block';
+            submitBtn.style.opacity = '0.6';
+            
+            setTimeout(() => {
+                const matches = encryptedHints.filter(hint => {
+                    const root = decrypt(hint.root).toLowerCase();
+                    return inputValue.includes(root);
+                });
+
+                scanEffect.style.display = 'none';
+                submitBtn.style.opacity = '1';
+
+                if (matches.length > 0) {
+                    const match = matches[0];
+                    const root = decrypt(match.root);
+                    const text = decrypt(match.text);
+                    const image = decrypt(match.image);
+
+                    resultArea.className = 'hint-found';
+                    resultArea.innerHTML = `
+                        <div class="hint-content">
+                            ${image ? `<img src="${image}" alt="${root}" class="hint-image" onerror="this.style.display='none'">` : ''}
+                            <div class="hint-text">
+                                ✅ Подсказка найдена!<br>
+                                <strong>${text}</strong>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultArea.className = 'hint-not-found';
+                    resultArea.innerHTML = `
+                        <div style="animation-delay: 0.2s;">
+                            ❌ Подсказка не найдена<br>
+                            <small>Попробуйте другие ключевые слова...</small>
+                        </div>
+                    `;
+                }
+
+                resultArea.style.opacity = '1';
+                resultArea.style.transform = 'translateY(0)';
+            }, 800);
+        }
+
+        submitBtn.addEventListener('click', showHint);
+        inputField.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') showHint();
+        });
+
+        // Enter для кнопки при фокусе
+        inputField.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                showHint();
+            }
+        });
+    </script>
 </body>
+</html>
