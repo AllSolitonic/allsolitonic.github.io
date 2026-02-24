@@ -196,12 +196,16 @@
     </div>
 
     <script>
-        // ТЕСТОВАЯ ЗАШИФРОВАННАЯ ПОДСКАЗКА
         const encryptedHints = [
             {
                 "root": "+pD6lPuo",
                 "text": "+rD6lPuoCvqW+6n7qvqR+6H7rfqf+6gE",
                 "image": "Ql5eWlkQBQVPUktHWkZPBElFRwVJS14EQFpN"
+            },
+            {
+                "root": "S0ZaQktIT14=",
+                "text": "aRAKeU9PCkxFWF1LWE4=",
+                "image": null
             }
         ];
 
@@ -274,7 +278,6 @@
             if (e.key === 'Enter') showHint();
         });
 
-        // Enter для кнопки при фокусе
         inputField.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
